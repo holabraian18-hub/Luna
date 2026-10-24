@@ -1,0 +1,184 @@
+```html
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para ti</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0a0a0c',
+                        cardbg: '#121216',
+                        accent: '#e11d48',
+                        accentHover: '#be123c',
+                    },
+                    fontFamily: {
+                        serif: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Fade transition effects */
+        .fade-in {
+            animation: fadeIn 1.2s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+    </style>
+</head>
+<body class="bg-darkbg text-zinc-300 font-sans min-h-screen flex flex-col justify-between selection:bg-rose-900 selection:text-white">
+
+    <!-- Header minimalista -->
+    <header class="p-6 text-center border-b border-zinc-900/80">
+        <div class="inline-flex items-center gap-2 text-zinc-500 text-xs tracking-widest uppercase">
+            <i data-lucide="moon" class="w-4 h-4 text-rose-500/70"></i>
+            <span>Mensaje Privado</span>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8">
+        <div class="max-w-2xl w-full">
+
+            <!-- Pantalla Inicial / Advertencia -->
+            <div id="initial-screen" class="bg-cardbg border border-zinc-800/80 rounded-2xl p-6 sm:p-10 shadow-2xl text-center fade-in">
+                <div class="w-12 h-12 bg-rose-950/40 border border-rose-900/50 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-400">
+                    <i data-lucide="message-square-heart" class="w-6 h-6"></i>
+                </div>
+                
+                <p class="text-zinc-300 text-base sm:text-lg leading-relaxed mb-8 font-light">
+                    Hago esto por desahogarme, sé que no quieres saber nada de mí, por esto trato de hacerlo lo más discreto, si estás acá, perdón, escoge alguna opción en caso de que quieras continuar o no.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                    <button id="btn-yes-1" onclick="showConfirmation()" class="w-full sm:w-auto px-8 py-3 bg-rose-700 hover:bg-rose-600 text-white font-medium rounded-xl transition-all duration-300 shadow-lg shadow-rose-950/50 flex items-center justify-center gap-2 group">
+                        <span>Sí, quiero leer</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    
+                    <button id="btn-no-1" onclick="redirectToCats()" class="w-full sm:w-auto px-8 py-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-800 rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                        <span>No</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Segunda Pantalla / Confirmación "¿Segura?" -->
+            <div id="confirm-screen" class="hidden bg-cardbg border border-zinc-800/80 rounded-2xl p-6 sm:p-10 shadow-2xl text-center fade-in">
+                <div class="w-12 h-12 bg-rose-950/40 border border-rose-900/50 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-400">
+                    <i data-lucide="help-circle" class="w-6 h-6"></i>
+                </div>
+                
+                <p class="text-zinc-200 text-xl sm:text-2xl font-serif tracking-wide mb-8 font-normal">
+                    ¿Segura?
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6 pt-2">
+                    <button id="btn-yes-2" onclick="showLetter()" class="w-full sm:w-auto px-6 py-2.5 bg-rose-800/80 hover:bg-rose-700 text-zinc-200 font-medium rounded-xl transition-all duration-300 shadow-md text-sm sm:text-base order-2 sm:order-1">
+                        <span>Sí</span>
+                    </button>
+                    
+                    <button id="btn-no-2" onclick="redirectToCats()" class="w-full sm:w-auto px-10 py-5 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-700 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-xl sm:text-2xl font-semibold shadow-xl hover:scale-105 order-1 sm:order-2">
+                        <i data-lucide="x" class="w-6 h-6 text-rose-500"></i>
+                        <span>No</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contenedor de la Carta (Oculto inicialmente) -->
+            <article id="letter-screen" class="hidden bg-cardbg border border-zinc-800/80 rounded-2xl p-6 sm:p-10 shadow-2xl fade-in relative my-6">
+                <!-- Adorno visual superior -->
+                <div class="flex items-center justify-between border-b border-zinc-800/60 pb-4 mb-6">
+                    <span class="text-xs text-rose-400/80 font-mono tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i> 23/10/2026
+                    </span>
+                    <span class="text-xs text-zinc-500 font-mono flex items-center gap-1">
+                        <i data-lucide="clock" class="w-3.5 h-3.5"></i> 6:27 AM
+                    </span>
+                </div>
+
+                <!-- Texto completo de la carta -->
+                <div class="prose prose-invert max-w-none text-zinc-300 leading-relaxed font-serif text-base sm:text-lg space-y-5 whitespace-pre-line text-justify">
+23/10/2026
+
+6:27, ha pasado un día, 6 horas y 57 minutos desde la última vez que hablamos en persona. Prometí no escribirte, trataré de no hacerlo directamente, aunque ahora mismo te esté escribiendo.
+No me salen las palabras para describir, o decir nada, simplemente tengo el pecho lleno de cosas que decir pero mi mente está abrumada, a las 9:50 estábamos abrazándonos, pidiéndonos perdón mutuamente por nuestra actitud y menos de dos horas después ya no había nada, todo es mi culpa. Meses, meses esperando un cambio que yo nunca te di, y cuando por fin estaba cambiando tú estabas en tu límite. Mi propia mente me ha traicionado, jamás pensaría que eso terminaría todo, que eso haría que ya no quisieras nada de mí, que no quisieras que te escribiera, que no quisieras nada conmigo, jamás me habías dicho eso, y creo que nada de lo que he visto o lo que me hayas dicho me ha lastimado más que eso, me estoy quejando, pero verte llorar, verte llorar me partió, me doy cuenta lo estúpido que soy, lo estúpido que fui. Me pediste espacio, si fuera por mí respetaría lo que me dices, pero, no puedo, simplemente no puedo, en algún momento te escribiré, aunque no me contestes, te escribiré, siempre te escribiré, no hay día, no hay hora ni minuto en que no esté pensando en ti, y pensando en cómo fui, y duele, duele saber que ya no volverás, que no me darás una última oportunidad, que ese "está bien" se volvió un "no" así, sin más, sin peros, sin nada. Te extraño, no me extrañas, no me extrañarás, quedan 3 semanas de clase, te veré, siempre te veré, será muy incómodo para ti si te das cuenta, pero es algo que hago inconscientemente, siempre te veo, siempre, y pues, te veo riéndote, te veo feliz, te veo viendo tu cel, tal vez hablando con otra persona, viendo videos, compartiendo cosas, estás tranquila, pero yo no puedo estarlo, quiero verte, a pesar de todo, quiero verte, no sé por qué pero es algo que ansío mucho, quiero verte aunque no sea conmigo y quiero que seas feliz aunque no sea conmigo, pero cuánto me hubiera encantado que yo formara parte de esa felicidad, llegué hace más de 40 minutos a casa, mi abuelita preguntó que si tenía algo, y, sí, sí tengo, tengo una culpa y un asco hacia mí mismo que nada me quitará, sé que no leerás esto, quiero respetar tu espacio, ojalá no lo hayas leído, y ojalá que si viste la notificación no me bloquees. A veces me pregunto si lo que me dijiste ayer era cierto pero, con lo que me dijiste hoy me queda claro que sí, sin importar qué pase tú seguirás siendo el amor de MI vida, sin importar que ya no me ames, sin importar que no me quieras y que no quieras volver a verme, que no quieras nada de mí. Lloro mientras escribo esto porque no soy capaz de hacerlo frente a más gente, y tal vez esta es la única forma en la que puedo expresarme, porque no tengo a nadie más, cuando me sentía mal acudía a ti pero eventualmente, me di cuenta que no debía hacerlo pues no importaba, Miguel ya no responde mis mensajes, Pardo, Carlos y el resto de mis amigos no saben nada, y no les contaré porque sé lo poco que les importa ya que al verme mal me insultaban, por eso prefiero escribir, es un texto muy largo ya, y tengo muchas preguntas que jamás nadie responderá. ¿Por qué me mirabas? Amo que me mires, pero, ¿por qué me miras? Yo no puedo evitar mirarte y sé que te miré miles de veces más que las que tú me miraste a mí, pues yo no puedo estar sin saber que estás, y tú simplemente me miras por casualidad, aunque a veces mantuvimos contacto visual por unos segundos, me doy cuenta que realmente que me mires no significa nada, y que realmente no puedo verte sin pensar en lo que hice, quisiera saber por qué me miras, ojalá lo sigas haciendo, sería peor que no lo hicieras, a pesar de que detrás de esas miradas no haya nada, ni una intención más, ni un poco de amor, ni nada. 
+Jamás me cansaré de decirlo, te extraño mucho, te extraño en todo momento, incluso cuando estoy con mis amigos y de verdad, qué bien que tú desde hace tiempo dejaste de pensar en mí, lastimosamente no podré hacer lo mismo. 3 semanas en las que te veré, en las que te veré tal vez con alguien más, en las que te veré muy feliz, muy bien, pasará Halloween y disfrazarme contigo se queda como una idea, y probablemente salgas esa noche con alguien más, te diviertas, la pases bien y hagas match de disfraces, lo que más duele es que no podré despedirme, probablemente el último día te mire de lejos, y no haga nada, porque sé que no recibiré nada, te miraré y recordaré todo en un segundo, cómo nos conocimos, nuestro primer abrazo, beso, nuestra primera conversación, el primer te amo, la vez que salimos, que fui a tu casa, las veces que confiaste en mí, las veces que fui tu lugar seguro, las veces que me perdonaste, las veces que la cagué, las veces que no cambié, me arrepentiré toda la vida, jamás podré perdonarme, y dolerá saber que mientras yo recuerdo todo con amor y arrepentimiento por mi comportamiento, yo sea uno más, ni el primero ni el último, y nunca el único, no me recordarás, no pensarás en mí cuando te sientas sola, no me necesitarás, no pensarás en mí cuando el año se acabe, y si llegas a recordarme, será con arrepentimiento de haberme conocido. Me odio bastante, por cómo me comporto, por cómo soy, por cómo SOY, por cómo actué contigo, por lo idiota que fui, por las miles de veces que confiaste en mí y nunca cambié. Sé que te arrepientes de haberme conocido, de haberme tomado de la mano, de haberme besado, abrazado, de haberte abierto hacia mí, de dejarme tocar tu cuerpo, tus brazos, de haberme dicho todo lo que me dijiste, de todo. Veo tus notas y compartidos y no puedo evitar pensar que en mi ausencia hay alguien más, alguien más. Te amo y te amaré toda la vida, te extrañaré toda la vida. Tomaste una decisión y no quiero faltarte al respeto, guardaré lo más posible esta carta, sé que no quieres saber nada de mí y sé que no es correcto que esté haciendo esto, y por eso te pido perdón si llega a llegarte. Te seguiré esperando con los brazos abiertos si algún día, aunque sea en años, piensas en volver. Si no me bloqueas no será la última vez que te escriba y este texto es largo porque estoy tratando de decir muchas cosas para molestar lo menos posible. Te amo 3 millones, ojalá poder seguir llamándote "mi niña", jajaja, te amo Luna.
+                </div>
+
+                <!-- Firma / Cierre -->
+                <div class="mt-10 pt-6 border-t border-zinc-800/60 flex justify-between items-center text-xs text-zinc-500">
+                    <span class="italic">Guardado en silencio</span>
+                    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="hover:text-rose-400 transition-colors flex items-center gap-1">
+                        <i data-lucide="chevron-up" class="w-4 h-4"></i> Volver arriba
+                    </button>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+    <!-- Footer minimalista -->
+    <footer class="p-4 text-center text-xs text-zinc-600">
+        <span>&copy; 2026</span>
+    </footer>
+
+    <script>
+        // Inicializar iconos de Lucide
+        lucide.createIcons();
+
+        // Función cuando presiona "No" -> Redirecciona a búsqueda de gatos
+        function redirectToCats() {
+            window.location.href = "https://www.google.com/search?q=gatos+tiernos+videos+y+fotos&tbm=isch";
+        }
+
+        // Función cuando presiona "Sí" por primera vez -> Muestra la confirmación "¿Segura?"
+        function showConfirmation() {
+            const initialScreen = document.getElementById('initial-screen');
+            const confirmScreen = document.getElementById('confirm-screen');
+
+            initialScreen.classList.add('hidden');
+            confirmScreen.classList.remove('hidden');
+        }
+
+        // Función cuando confirma "Sí" por segunda vez -> Revela la carta
+        function showLetter() {
+            const confirmScreen = document.getElementById('confirm-screen');
+            const letterScreen = document.getElementById('letter-screen');
+
+            confirmScreen.classList.add('hidden');
+            letterScreen.classList.remove('hidden');
+
+            // Desplazar suavemente hacia la carta
+            letterScreen.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+```
